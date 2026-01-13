@@ -19,7 +19,7 @@ const statusColors: Record<OrderStatus, 'default' | 'success' | 'warning' | 'dan
   cancelled: 'danger',
 };
 
-interface SerializedOrder extends Omit<IOrder, '_id' | 'createdAt' | 'updatedAt'> {
+interface SerializedOrder extends Omit<IOrder, '_id' | 'createdAt' | 'updatedAt' | 'products'> {
   _id: string;
   createdAt: string;
   updatedAt: string;
