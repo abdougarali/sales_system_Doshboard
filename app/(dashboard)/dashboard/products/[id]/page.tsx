@@ -30,11 +30,14 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
     notFound();
   }
 
+  // Type assertion after null check
+  const productData = product as SerializedProduct;
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{productData.name}</h1>
           <p className="mt-2 text-sm text-gray-600">Product details and management</p>
         </div>
         <Link href="/dashboard/products">
@@ -44,7 +47,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <ProductForm product={product} />
+          <ProductForm product={productData} />
         </div>
         <div className="space-y-6">
           <Card title="Quick Info">
@@ -52,7 +55,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
               <div>
                 <label className="text-sm font-medium text-gray-500">Status</label>
                 <div className="mt-1">
-                  {product.active ? (
+                  {productData.active ? (
                     <Badge variant="success">Active</Badge>
                   ) : (
                     <Badge variant="default">Inactive</Badge>
@@ -62,19 +65,19 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
               <div>
                 <label className="text-sm font-medium text-gray-500">Price</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">
-                  {product.price.toFixed(2)}
+                  {productData.price.toFixed(2)}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Stock</label>
-                <p className={`mt-1 text-lg font-semibold ${product.stock === 0 ? 'text-red-600' : 'text-gray-900'}`}>
-                  {product.stock}
+                <p className={`mt-1 text-lg font-semibold ${productData.stock === 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                  {productData.stock}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Created</label>
                 <p className="mt-1 text-sm text-gray-900">
-                  {new Date(product.createdAt).toLocaleDateString()}
+                  {new Date(productData.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -82,8 +85,8 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
           <Card title="Actions">
             <div className="space-y-3">
-              <ToggleProductButton productId={product._id.toString()} active={product.active} />
-              <DeleteProductButton productId={product._id.toString()} productName={product.name} />
+              <ToggleProductButton productId={productData._id.toString()} active={productData.active} />
+              <DeleteProductButton productId={productData._id.toString()} productName={productData.name} />
             </div>
           </Card>
         </div>

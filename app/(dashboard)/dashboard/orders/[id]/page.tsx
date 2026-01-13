@@ -45,11 +45,14 @@ export default async function OrderDetailPage({ params }: { params: { id: string
     notFound();
   }
 
+  // Type assertion after null check
+  const orderData = order as SerializedOrder;
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Order {order.orderNumber}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Order {orderData.orderNumber}</h1>
           <p className="mt-2 text-sm text-gray-600">Order details and management</p>
         </div>
         <Link href="/dashboard/orders">
@@ -59,7 +62,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <OrderForm order={order} />
+          <OrderForm order={orderData} />
         </div>
         <div className="space-y-6">
           <Card title="Order Info">
@@ -67,25 +70,25 @@ export default async function OrderDetailPage({ params }: { params: { id: string
               <div>
                 <label className="text-sm font-medium text-gray-500">Status</label>
                 <div className="mt-1">
-                  <Badge variant={statusColors[order.status as OrderStatus] || 'default'}>
-                    {order.status.replace('_', ' ')}
+                  <Badge variant={statusColors[orderData.status as OrderStatus] || 'default'}>
+                    {orderData.status.replace('_', ' ')}
                   </Badge>
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Total Amount</label>
                 <p className="mt-1 text-2xl font-bold text-gray-900">
-                  {order.totalAmount.toFixed(2)}
+                  {orderData.totalAmount.toFixed(2)}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Order Number</label>
-                <p className="mt-1 text-sm font-mono text-gray-900">{order.orderNumber}</p>
+                <p className="mt-1 text-sm font-mono text-gray-900">{orderData.orderNumber}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Created</label>
                 <p className="mt-1 text-sm text-gray-900">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Date(orderData.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -95,16 +98,16 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             <div className="space-y-3">
               <div>
                 <label className="text-sm font-medium text-gray-500">Name</label>
-                <p className="mt-1 text-sm text-gray-900">{order.customerName}</p>
+                <p className="mt-1 text-sm text-gray-900">{orderData.customerName}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Phone</label>
-                <p className="mt-1 text-sm text-gray-900">{order.customerPhone}</p>
+                <p className="mt-1 text-sm text-gray-900">{orderData.customerPhone}</p>
               </div>
-              {order.customerAddress && (
+              {orderData.customerAddress && (
                 <div>
                   <label className="text-sm font-medium text-gray-500">Address</label>
-                  <p className="mt-1 text-sm text-gray-900">{order.customerAddress}</p>
+                  <p className="mt-1 text-sm text-gray-900">{orderData.customerAddress}</p>
                 </div>
               )}
             </div>
@@ -112,7 +115,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
 
           <Card title="Products">
             <div className="space-y-3">
-              {order.products.map((item: any, index: number) => {
+              {orderData.products.map((item: any, index: number) => {
                 const product = item.productId;
                 return (
                   <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0">
@@ -133,8 +136,8 @@ export default async function OrderDetailPage({ params }: { params: { id: string
 
           <Card title="Actions">
             <div className="space-y-3">
-              <UpdateOrderStatus orderId={order._id.toString()} currentStatus={order.status} />
-              <DeleteOrderButton orderId={order._id.toString()} orderNumber={order.orderNumber} />
+              <UpdateOrderStatus orderId={orderData._id.toString()} currentStatus={orderData.status} />
+              <DeleteOrderButton orderId={orderData._id.toString()} orderNumber={orderData.orderNumber} />
             </div>
           </Card>
         </div>

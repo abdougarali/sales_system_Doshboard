@@ -38,11 +38,14 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
     notFound();
   }
 
+  // Type assertion after null check
+  const leadData = lead as SerializedLead;
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{lead.brandName}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{leadData.brandName}</h1>
           <p className="mt-2 text-sm text-gray-600">Lead details and management</p>
         </div>
         <Link href="/dashboard/leads">
@@ -52,7 +55,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <LeadForm lead={lead} />
+          <LeadForm lead={leadData} />
         </div>
         <div>
           <Card title="Quick Info">
@@ -60,33 +63,33 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
               <div>
                 <label className="text-sm font-medium text-gray-500">Status</label>
                 <div className="mt-1">
-                  <Badge variant={statusColors[lead.status as LeadStatus] || 'default'}>
-                    {lead.status.replace('_', ' ')}
+                  <Badge variant={statusColors[leadData.status as LeadStatus] || 'default'}>
+                    {leadData.status.replace('_', ' ')}
                   </Badge>
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Platform</label>
-                <p className="mt-1 text-sm text-gray-900 capitalize">{lead.platform}</p>
+                <p className="mt-1 text-sm text-gray-900 capitalize">{leadData.platform}</p>
               </div>
-              {lead.instagramHandle && (
+              {leadData.instagramHandle && (
                 <div>
                   <label className="text-sm font-medium text-gray-500">Instagram Handle</label>
-                  <p className="mt-1 text-sm text-gray-900">@{lead.instagramHandle}</p>
+                  <p className="mt-1 text-sm text-gray-900">@{leadData.instagramHandle}</p>
                 </div>
               )}
-              {lead.dateContacted && (
+              {leadData.dateContacted && (
                 <div>
                   <label className="text-sm font-medium text-gray-500">Date Contacted</label>
                   <p className="mt-1 text-sm text-gray-900">
-                    {new Date(lead.dateContacted).toLocaleDateString()}
+                    {new Date(leadData.dateContacted).toLocaleDateString()}
                   </p>
                 </div>
               )}
               <div>
                 <label className="text-sm font-medium text-gray-500">Created</label>
                 <p className="mt-1 text-sm text-gray-900">
-                  {new Date(lead.createdAt).toLocaleDateString()}
+                  {new Date(leadData.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
