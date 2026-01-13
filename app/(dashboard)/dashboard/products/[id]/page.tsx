@@ -9,11 +9,18 @@ import Badge from '@/components/ui/Badge';
 import ToggleProductButton from '@/components/products/ToggleProductButton';
 import DeleteProductButton from '@/components/products/DeleteProductButton';
 import { serializeDocument } from '@/lib/utils/serialize';
+import { IProduct } from '@/types';
 
-async function getProduct(id: string) {
+interface SerializedProduct extends Omit<IProduct, '_id' | 'createdAt' | 'updatedAt'> {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+async function getProduct(id: string): Promise<SerializedProduct | null> {
   await connectDB();
   const product = await Product.findById(id).lean();
-  return product ? serializeDocument(product) : null;
+  return product ? serializeDocument<SerializedProduct>(product) : null;
 }
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {

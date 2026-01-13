@@ -6,7 +6,7 @@ import LeadForm from '@/components/leads/LeadForm';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { LeadStatus } from '@/types';
+import { LeadStatus, ILead } from '@/types';
 import { serializeDocument } from '@/lib/utils/serialize';
 
 const statusColors: Record<LeadStatus, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
@@ -18,10 +18,17 @@ const statusColors: Record<LeadStatus, 'default' | 'success' | 'warning' | 'dang
   lost: 'danger',
 };
 
-async function getLead(id: string) {
+interface SerializedLead extends Omit<ILead, '_id' | 'createdAt' | 'updatedAt' | 'dateContacted'> {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  dateContacted?: string;
+}
+
+async function getLead(id: string): Promise<SerializedLead | null> {
   await connectDB();
   const lead = await Lead.findById(id).lean();
-  return lead ? serializeDocument(lead) : null;
+  return lead ? serializeDocument<SerializedLead>(lead) : null;
 }
 
 export default async function LeadDetailPage({ params }: { params: { id: string } }) {

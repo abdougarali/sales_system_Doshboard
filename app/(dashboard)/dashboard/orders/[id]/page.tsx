@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import UpdateOrderStatus from '@/components/orders/UpdateOrderStatus';
 import DeleteOrderButton from '@/components/orders/DeleteOrderButton';
-import { OrderStatus } from '@/types';
+import { OrderStatus, IOrder } from '@/types';
 import { serializeDocument } from '@/lib/utils/serialize';
 
 const statusColors: Record<OrderStatus, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
@@ -19,12 +19,23 @@ const statusColors: Record<OrderStatus, 'default' | 'success' | 'warning' | 'dan
   cancelled: 'danger',
 };
 
-async function getOrder(id: string) {
+interface SerializedOrder extends Omit<IOrder, '_id' | 'createdAt' | 'updatedAt'> {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  products: Array<{
+    productId: { _id: string; name: string; price: number; imageUrl?: string } | string;
+    quantity: number;
+    price: number;
+  }>;
+}
+
+async function getOrder(id: string): Promise<SerializedOrder | null> {
   await connectDB();
   const order = await Order.findById(id)
     .populate('products.productId', 'name price imageUrl')
     .lean();
-  return order ? serializeDocument(order) : null;
+  return order ? serializeDocument<SerializedOrder>(order) : null;
 }
 
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
