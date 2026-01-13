@@ -41,7 +41,7 @@ export function TableHeader({
   children, 
   className = '' 
 }: { 
-  children: ReactNode; 
+  children?: ReactNode; 
   className?: string;
 }) {
   return (
@@ -57,7 +57,7 @@ export function TableCell({
   children, 
   className = '' 
 }: { 
-  children: ReactNode; 
+  children?: ReactNode; 
   className?: string;
 }) {
   return (
