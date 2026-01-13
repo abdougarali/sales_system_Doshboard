@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { ILead, Platform, ReplyStatus, InterestLevel, LeadStatus } from '@/types';
+import { getMessageByStatus } from '@/lib/utils/leadMessages';
 
 interface LeadFormProps {
   lead?: any;
@@ -14,6 +15,7 @@ export default function LeadForm({ lead }: LeadFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     brandName: lead?.brandName || '',
     instagramHandle: lead?.instagramHandle || '',
@@ -135,7 +137,10 @@ export default function LeadForm({ lead }: LeadFormProps) {
             <select
               id="status"
               value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as LeadStatus })}
+              onChange={(e) => {
+                setFormData({ ...formData, status: e.target.value as LeadStatus });
+                setCopied(false);
+              }}
               className="select"
             >
               <option value="new">New</option>
@@ -196,6 +201,75 @@ export default function LeadForm({ lead }: LeadFormProps) {
           </div>
         </div>
 
+        {/* Message Template - Shows based on selected status */}
+        {(() => {
+          const template = getMessageByStatus(formData.status);
+          if (!template) return null;
+          
+          const handleCopy = async () => {
+            try {
+              await navigator.clipboard.writeText(template.message);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            } catch (err) {
+              const textarea = document.createElement('textarea');
+              textarea.value = template.message;
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }
+          };
+          
+          return (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 overflow-hidden animate-fadeIn">
+              <div className="px-4 py-3 bg-white/60 border-b border-blue-100 flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">💬</span>
+                  <span className="font-semibold text-gray-800">{template.title}</span>
+                  <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">{template.titleAr}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+                    copied
+                      ? 'bg-green-500 text-white'
+                      : 'bg-blue-500 hover:bg-blue-600 text-white shadow-sm hover:shadow'
+                  }`}
+                >
+                  {copied ? (
+                    <>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      Copy Message
+                    </>
+                  )}
+                </button>
+              </div>
+              <div className="p-4">
+                <p className="text-xs text-gray-500 mb-2">{template.description}</p>
+                <div 
+                  dir="rtl" 
+                  className="bg-white rounded-lg border border-blue-100 p-4 text-right whitespace-pre-wrap text-gray-700 leading-relaxed text-sm max-h-48 overflow-y-auto"
+                >
+                  {template.message}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         <div>
           <label htmlFor="notes" className="label">
             Notes
@@ -203,10 +277,11 @@ export default function LeadForm({ lead }: LeadFormProps) {
           <textarea
             id="notes"
             rows={4}
+            dir="rtl"
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            className="textarea"
-            placeholder="Add any notes about this lead..."
+            className="textarea text-right"
+            placeholder="أضف ملاحظاتك هنا..."
           />
         </div>
 
