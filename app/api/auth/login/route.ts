@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyPassword, getAdminPasswordHash, initializeAdmin } from '@/lib/auth/password';
+import { verifyPassword, isPasswordConfigured } from '@/lib/auth/password';
 import { createSession } from '@/lib/auth/session';
 
 const SESSION_COOKIE_NAME = 'admin_session';
@@ -15,24 +15,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get admin password hash
-    let passwordHash = await getAdminPasswordHash();
-
-    // If no admin exists, initialize with provided password
-    if (!passwordHash) {
-      await initializeAdmin(password);
-      passwordHash = await getAdminPasswordHash();
-    }
-
-    if (!passwordHash) {
+    // Check if password is configured
+    if (!isPasswordConfigured()) {
       return NextResponse.json(
-        { error: 'Admin not configured' },
+        { error: 'ADMIN_PASSWORD not configured in .env.local' },
         { status: 500 }
       );
     }
 
-    // Verify password
-    const isValid = await verifyPassword(password, passwordHash);
+    // Verify password against env variable
+    const isValid = verifyPassword(password);
 
     if (!isValid) {
       return NextResponse.json(

@@ -21,19 +21,11 @@ This will install all required packages:
 - React
 - MongoDB (Mongoose)
 - Tailwind CSS
-- bcryptjs (for password hashing)
 - Heroicons (for icons)
 
 ## Step 2: Set Up Environment Variables
 
-1. Create a `.env` file in the root directory:
-
-```bash
-# Copy the example file
-cp .env.example .env
-```
-
-2. Edit the `.env` file with your settings:
+1. Create a `.env.local` file in the root directory:
 
 ```env
 # MongoDB Connection
@@ -43,12 +35,16 @@ MONGODB_URI=mongodb://localhost:27017/sales_system
 # For MongoDB Atlas (cloud):
 # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/sales_system
 
-# Session Secret (change this to a random string)
+# Session Secret (any random string for security)
 SESSION_SECRET=your-random-secret-key-change-this-in-production
+
+# Admin Password (this is your login password)
+ADMIN_PASSWORD=your-password-here
 ```
 
 **Important:** 
-- Replace `your-random-secret-key-change-this-in-production` with a random string
+- Set `ADMIN_PASSWORD` to the password you want to use for login
+- Replace `SESSION_SECRET` with a random string
 - For MongoDB Atlas, get your connection string from your cluster dashboard
 
 ## Step 3: Start MongoDB
@@ -71,7 +67,7 @@ brew services start mongodb-community
 ```
 
 ### If using MongoDB Atlas:
-- No setup needed, just use your connection string in `.env`
+- No setup needed, just use your connection string in `.env.local`
 
 ## Step 4: Run the Development Server
 
@@ -79,26 +75,41 @@ brew services start mongodb-community
 npm run dev
 ```
 
-The server will start at: **http://localhost:3000**
+The server will start at: **http://localhost:3001**
 
-## Step 5: First-Time Login
+## Step 5: Login
 
-1. Open your browser and go to: `http://localhost:3000`
+1. Open your browser and go to: `http://localhost:3001`
 2. You'll be redirected to the login page
-3. **Enter any password** (this will be your admin password)
-4. The system will automatically create the admin user with that password
-5. You're now logged in!
+3. Enter the password you set in `ADMIN_PASSWORD`
+4. You're now logged in!
 
-**Note:** Remember this password - you'll need it to log in next time.
+## Changing Your Password
+
+To change your password:
+
+1. Open `.env.local` file
+2. Change the value of `ADMIN_PASSWORD`:
+   ```env
+   ADMIN_PASSWORD=your-new-password
+   ```
+3. Save the file
+4. Restart the server (if running): `npm run dev`
+5. Login with your new password
+
+**That's it!** No database changes needed.
+
+---
 
 ## Using the System
 
 ### Dashboard Overview
 
 After logging in, you'll see the main dashboard with:
-- **Statistics Cards**: Total leads, active leads, converted leads, total orders
+- **Statistics Cards**: Total Revenue, Monthly comparison, Conversion Rate, etc.
 - **Quick Actions**: Links to add new leads, products, or orders
-- **System Info**: Active products count and conversion rate
+- **Charts**: Orders by status, Leads by platform
+- **Top Products & Low Stock Alerts**
 
 ### Managing Leads
 
@@ -118,13 +129,11 @@ After logging in, you'll see the main dashboard with:
    - Reply Status
    - Interest Level
    - Notes
-3. Click "Create Lead"
+3. **See the message template** based on selected status
+4. Click "Create Lead"
 
-**Edit Lead:**
-1. Go to Leads page
-2. Click "View" on any lead
-3. Update information
-4. Click "Update Lead"
+**Message Templates:**
+When you select a status, a pre-written Arabic message template appears. Click "Copy Message" to copy it and send to the brand!
 
 **Lead Status Pipeline:**
 - **New**: Just added, not contacted yet
@@ -152,20 +161,9 @@ After logging in, you'll see the main dashboard with:
    - Active checkbox - checked by default
 3. Click "Create Product"
 
-**Edit Product:**
-1. Go to Products page
-2. Click "Edit" on any product
-3. Update information
-4. Click "Update Product"
-
 **Activate/Deactivate Product:**
 - Click "Activate" or "Deactivate" button on product row
 - Inactive products won't appear in order creation
-
-**Delete Product:**
-- Click "Delete" button
-- Confirm deletion
-- **Warning**: This cannot be undone
 
 ### Managing Orders
 
@@ -181,39 +179,17 @@ After logging in, you'll see the main dashboard with:
    - Customer Address (optional)
 3. Add Products:
    - Click "+ Add Product"
-   - Select product from dropdown (only active products with stock shown)
+   - Select product from dropdown
    - Enter quantity
-   - Add more products as needed
    - Total is calculated automatically
-4. Add Notes (optional)
-5. Click "Create Order"
-
-**Important Notes:**
-- Stock is automatically deducted when order is created
-- Product prices are saved at time of order (price snapshot)
-- Order number is auto-generated (ORD-000001, ORD-000002, etc.)
-
-**View/Edit Order:**
-1. Go to Orders page
-2. Click "View" on any order
-3. See full order details:
-   - Customer information
-   - Product list with quantities and prices
-   - Total amount
-   - Order status
-4. Update customer info or notes
-5. Change order status using dropdown
+4. Click "Create Order"
 
 **Update Order Status:**
 - New → Confirmed → In Progress → Delivered
 - Or mark as Cancelled
-- Status can be updated from order detail page
+- **Completed orders are counted in Total Revenue**
 
-**Delete Order:**
-- Click "Delete Order" button
-- Confirm deletion
-- Stock is restored if order wasn't delivered or cancelled
-- **Warning**: This cannot be undone
+---
 
 ## Navigation
 
@@ -227,41 +203,47 @@ The sidebar provides quick access to:
 
 Click "Logout" button in the top-right corner to log out.
 
+---
+
 ## Troubleshooting
 
 ### MongoDB Connection Error
 - Check if MongoDB is running
-- Verify your `MONGODB_URI` in `.env` is correct
+- Verify your `MONGODB_URI` in `.env.local` is correct
 - For Atlas: Check your IP whitelist and credentials
 
-### Port Already in Use
-- Change the port: `npm run dev -- -p 3001`
-- Or stop the process using port 3000
-
 ### Login Issues
-- Make sure you remember your password
-- If you forgot, you can delete the admin user from MongoDB and create a new one by logging in again
+- Make sure `ADMIN_PASSWORD` is set in `.env.local`
+- Check for typos in the password
+- Restart the server after changing the password
 
 ### Products Not Showing in Order Form
 - Check if product is marked as "Active"
 - Check if product has stock > 0
 - Only active products with stock appear in order creation
 
+---
+
 ## Production Deployment
 
 For production:
-1. Set `NODE_ENV=production` in `.env`
+1. Set `NODE_ENV=production` in `.env.local`
 2. Generate a strong `SESSION_SECRET`
-3. Use a secure MongoDB connection
-4. Build the app: `npm run build`
-5. Start: `npm start`
+3. Set a strong `ADMIN_PASSWORD`
+4. Use a secure MongoDB connection
+5. Build the app: `npm run build`
+6. Start: `npm start`
 
-## Next Steps
+---
 
-Now that you're set up:
-1. Add your first lead (brand you want to contact)
-2. Add products to your catalog
-3. Create orders when customers place orders
-4. Track everything through the dashboard
+## Environment Variables Summary
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `MONGODB_URI` | MongoDB connection string | ✅ Yes |
+| `SESSION_SECRET` | Random string for session security | ✅ Yes |
+| `ADMIN_PASSWORD` | Your login password | ✅ Yes |
+
+---
 
 The system is ready to use! 🚀
