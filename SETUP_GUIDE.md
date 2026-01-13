@@ -1,0 +1,267 @@
+# Setup & Usage Guide
+
+## Prerequisites
+
+Before you start, make sure you have:
+- **Node.js 18+** installed ([Download here](https://nodejs.org/))
+- **MongoDB** running (local or cloud)
+  - Local: Install MongoDB Community Edition
+  - Cloud: Use MongoDB Atlas (free tier available)
+
+## Step 1: Install Dependencies
+
+Open your terminal in the project directory and run:
+
+```bash
+npm install
+```
+
+This will install all required packages:
+- Next.js
+- React
+- MongoDB (Mongoose)
+- Tailwind CSS
+- bcryptjs (for password hashing)
+- Heroicons (for icons)
+
+## Step 2: Set Up Environment Variables
+
+1. Create a `.env` file in the root directory:
+
+```bash
+# Copy the example file
+cp .env.example .env
+```
+
+2. Edit the `.env` file with your settings:
+
+```env
+# MongoDB Connection
+# For local MongoDB:
+MONGODB_URI=mongodb://localhost:27017/sales_system
+
+# For MongoDB Atlas (cloud):
+# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/sales_system
+
+# Session Secret (change this to a random string)
+SESSION_SECRET=your-random-secret-key-change-this-in-production
+```
+
+**Important:** 
+- Replace `your-random-secret-key-change-this-in-production` with a random string
+- For MongoDB Atlas, get your connection string from your cluster dashboard
+
+## Step 3: Start MongoDB
+
+### If using Local MongoDB:
+
+**Windows:**
+```bash
+# MongoDB should start automatically as a service
+# Or start it manually:
+net start MongoDB
+```
+
+**Mac/Linux:**
+```bash
+# Start MongoDB service
+sudo systemctl start mongod
+# Or:
+brew services start mongodb-community
+```
+
+### If using MongoDB Atlas:
+- No setup needed, just use your connection string in `.env`
+
+## Step 4: Run the Development Server
+
+```bash
+npm run dev
+```
+
+The server will start at: **http://localhost:3000**
+
+## Step 5: First-Time Login
+
+1. Open your browser and go to: `http://localhost:3000`
+2. You'll be redirected to the login page
+3. **Enter any password** (this will be your admin password)
+4. The system will automatically create the admin user with that password
+5. You're now logged in!
+
+**Note:** Remember this password - you'll need it to log in next time.
+
+## Using the System
+
+### Dashboard Overview
+
+After logging in, you'll see the main dashboard with:
+- **Statistics Cards**: Total leads, active leads, converted leads, total orders
+- **Quick Actions**: Links to add new leads, products, or orders
+- **System Info**: Active products count and conversion rate
+
+### Managing Leads
+
+**View All Leads:**
+- Click "Leads" in the sidebar
+- See all brands you've contacted in a table
+- View status, platform, reply status, and demo sent status
+
+**Add New Lead:**
+1. Click "Leads" → "+ Add New Lead"
+2. Fill in:
+   - Brand Name (required)
+   - Platform (Instagram/Messenger/WhatsApp)
+   - Instagram Handle (optional)
+   - Date Contacted
+   - Status (New, Contacted, Replied, Demo Sent, Converted, Lost)
+   - Reply Status
+   - Interest Level
+   - Notes
+3. Click "Create Lead"
+
+**Edit Lead:**
+1. Go to Leads page
+2. Click "View" on any lead
+3. Update information
+4. Click "Update Lead"
+
+**Lead Status Pipeline:**
+- **New**: Just added, not contacted yet
+- **Contacted**: Initial message sent
+- **Replied**: Brand replied to your message
+- **Demo Sent**: Demo website sent
+- **Converted**: Successfully converted to customer
+- **Lost**: Not interested or no response
+
+### Managing Products
+
+**View All Products:**
+- Click "Products" in the sidebar
+- See all products with price, stock, and status
+
+**Add New Product:**
+1. Click "Products" → "+ Add New Product"
+2. Fill in:
+   - Product Name (English) - required
+   - Product Name (Arabic) - optional
+   - Price - required (must be ≥ 0)
+   - Stock Quantity - required (must be ≥ 0)
+   - Description (English & Arabic) - optional
+   - Image URL - optional
+   - Active checkbox - checked by default
+3. Click "Create Product"
+
+**Edit Product:**
+1. Go to Products page
+2. Click "Edit" on any product
+3. Update information
+4. Click "Update Product"
+
+**Activate/Deactivate Product:**
+- Click "Activate" or "Deactivate" button on product row
+- Inactive products won't appear in order creation
+
+**Delete Product:**
+- Click "Delete" button
+- Confirm deletion
+- **Warning**: This cannot be undone
+
+### Managing Orders
+
+**View All Orders:**
+- Click "Orders" in the sidebar
+- See all orders with customer info, products, total, and status
+
+**Create New Order:**
+1. Click "Orders" → "+ Create New Order"
+2. Fill in customer information:
+   - Customer Name (required)
+   - Customer Phone (required)
+   - Customer Address (optional)
+3. Add Products:
+   - Click "+ Add Product"
+   - Select product from dropdown (only active products with stock shown)
+   - Enter quantity
+   - Add more products as needed
+   - Total is calculated automatically
+4. Add Notes (optional)
+5. Click "Create Order"
+
+**Important Notes:**
+- Stock is automatically deducted when order is created
+- Product prices are saved at time of order (price snapshot)
+- Order number is auto-generated (ORD-000001, ORD-000002, etc.)
+
+**View/Edit Order:**
+1. Go to Orders page
+2. Click "View" on any order
+3. See full order details:
+   - Customer information
+   - Product list with quantities and prices
+   - Total amount
+   - Order status
+4. Update customer info or notes
+5. Change order status using dropdown
+
+**Update Order Status:**
+- New → Confirmed → In Progress → Delivered
+- Or mark as Cancelled
+- Status can be updated from order detail page
+
+**Delete Order:**
+- Click "Delete Order" button
+- Confirm deletion
+- Stock is restored if order wasn't delivered or cancelled
+- **Warning**: This cannot be undone
+
+## Navigation
+
+The sidebar provides quick access to:
+- **Dashboard**: Overview and statistics
+- **Leads**: Brand outreach management
+- **Products**: Product catalog
+- **Orders**: Customer orders
+
+## Logout
+
+Click "Logout" button in the top-right corner to log out.
+
+## Troubleshooting
+
+### MongoDB Connection Error
+- Check if MongoDB is running
+- Verify your `MONGODB_URI` in `.env` is correct
+- For Atlas: Check your IP whitelist and credentials
+
+### Port Already in Use
+- Change the port: `npm run dev -- -p 3001`
+- Or stop the process using port 3000
+
+### Login Issues
+- Make sure you remember your password
+- If you forgot, you can delete the admin user from MongoDB and create a new one by logging in again
+
+### Products Not Showing in Order Form
+- Check if product is marked as "Active"
+- Check if product has stock > 0
+- Only active products with stock appear in order creation
+
+## Production Deployment
+
+For production:
+1. Set `NODE_ENV=production` in `.env`
+2. Generate a strong `SESSION_SECRET`
+3. Use a secure MongoDB connection
+4. Build the app: `npm run build`
+5. Start: `npm start`
+
+## Next Steps
+
+Now that you're set up:
+1. Add your first lead (brand you want to contact)
+2. Add products to your catalog
+3. Create orders when customers place orders
+4. Track everything through the dashboard
+
+The system is ready to use! 🚀
