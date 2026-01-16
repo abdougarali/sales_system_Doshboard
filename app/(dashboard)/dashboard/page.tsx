@@ -101,10 +101,10 @@ async function getStats() {
     { $group: { _id: '$platform', count: { $sum: 1 } } }
   ]);
 
-  // Low stock products (stock < 10)
+  // Low stock products (stock < 5)
   const lowStockProducts = await Product.find({ 
     active: true, 
-    stock: { $lt: 10 } 
+    stock: { $lt: 5 } 
   }).sort({ stock: 1 }).limit(5).lean();
 
   // Recent orders

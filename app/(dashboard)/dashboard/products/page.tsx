@@ -80,7 +80,7 @@ export default async function ProductsPage() {
                         <span className="font-semibold text-gray-900">{product.price.toFixed(2)}</span>
                       </TableCell>
                       <TableCell>
-                        <span className={`font-medium ${product.stock === 0 ? 'text-red-600' : product.stock < 10 ? 'text-amber-600' : 'text-gray-900'}`}>
+                        <span className={`font-medium ${product.stock === 0 ? 'text-red-600' : product.stock < 5 ? 'text-amber-600' : 'text-gray-900'}`}>
                           {product.stock}
                         </span>
                       </TableCell>

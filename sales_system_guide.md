@@ -1,3 +1,46 @@
+You are a senior full-stack engineer and product designer.
+
+Your task is to BUILD a clean, professional internal sales dashboard
+for selling websites to small Arabic brands.
+
+IMPORTANT RULES:
+- Build step by step
+- Start with MVP
+- No external APIs
+- Manual outreach only
+- Clean logic and simple UX
+- Production-ready code
+- Explain each file briefly
+
+TECH STACK:
+- Next.js (App Router)
+- React (simple)
+- MongoDB (Mongoose)
+- Tailwind CSS
+- Local authentication (admin only)
+
+START WITH:
+1. Project structure
+2. MongoDB schemas
+3. Core pages:
+   - Brand list
+   - Brand detail
+   - Status pipeline
+   - Message generator
+4. Simple UI (admin dashboard)
+
+DO NOT:
+- Add automation
+- Add Instagram APIs
+- Over-engineer
+
+Then continue implementing features described below.
+
+
+
+
+
+
 
 # Sales Outreach & Order Management System (Pro Guide)
 

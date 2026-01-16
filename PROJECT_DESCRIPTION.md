@@ -91,7 +91,7 @@ A **professional, all-in-one internal dashboard** designed to help you manage yo
 - **Product Features**
   - Activate/Deactivate products
   - Stock tracking
-  - Low stock alerts (when stock < 10)
+  - Low stock alerts (when stock < 5)
   - Product list view with all details
   - Search and filter capabilities
 
