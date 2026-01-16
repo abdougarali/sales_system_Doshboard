@@ -95,7 +95,9 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json(lead);
+    const response = NextResponse.json(lead);
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    return response;
   } catch (error: any) {
     console.error('Error updating lead:', error);
     return NextResponse.json(

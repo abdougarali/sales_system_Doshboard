@@ -9,6 +9,9 @@ import ToggleProductButton from '@/components/products/ToggleProductButton';
 import DeleteProductButton from '@/components/products/DeleteProductButton';
 import { PlusIcon, CubeIcon } from '@heroicons/react/24/outline';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getProducts() {
   await connectDB();
   const products = await Product.find().sort({ createdAt: -1 }).limit(50).lean();

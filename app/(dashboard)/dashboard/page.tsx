@@ -20,6 +20,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { OrderStatus } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Helper to get date ranges
 function getDateRanges() {
   const now = new Date();

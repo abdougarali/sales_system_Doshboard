@@ -82,7 +82,9 @@ export async function POST(request: NextRequest) {
       active: active !== undefined ? active : true,
     });
 
-    return NextResponse.json(product, { status: 201 });
+    const response = NextResponse.json(product, { status: 201 });
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    return response;
   } catch (error: any) {
     console.error('Error creating product:', error);
     return NextResponse.json(

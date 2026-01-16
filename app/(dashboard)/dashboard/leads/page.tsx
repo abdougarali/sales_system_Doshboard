@@ -32,6 +32,9 @@ const platformLabels: Record<string, string> = {
   whatsapp: 'WhatsApp',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getLeads() {
   await connectDB();
   const leads = await Lead.find().sort({ createdAt: -1 }).limit(50).lean();

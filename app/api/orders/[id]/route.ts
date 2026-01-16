@@ -150,7 +150,9 @@ export async function PUT(
       .populate('products.productId', 'name price')
       .lean();
 
-    return NextResponse.json(order);
+    const response = NextResponse.json(order);
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    return response;
   } catch (error: any) {
     console.error('Error updating order:', error);
     return NextResponse.json(

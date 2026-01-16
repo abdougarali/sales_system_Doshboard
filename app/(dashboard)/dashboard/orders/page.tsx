@@ -24,6 +24,9 @@ const statusLabels: Record<OrderStatus, string> = {
   cancelled: 'Cancelled',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getOrders() {
   await connectDB();
   const orders = await Order.find()

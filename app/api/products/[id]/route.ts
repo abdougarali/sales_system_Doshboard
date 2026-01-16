@@ -90,7 +90,9 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json(product);
+    const response = NextResponse.json(product);
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    return response;
   } catch (error: any) {
     console.error('Error updating product:', error);
     return NextResponse.json(
